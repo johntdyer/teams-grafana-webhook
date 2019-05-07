@@ -1,77 +1,115 @@
 package main
 
 import (
-	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
-	"net/url"
-	"text/template"
+	"os"
+
+	"time"
+
+	webexteams "github.com/jbogarin/go-cisco-webex-teams/sdk"
+	"gopkg.in/resty.v1"
 
 	"github.com/gorilla/mux"
 )
 
-type GrafanaAlert struct {
-	Title       string `json:"title"`
-	RuleID      int    `json:"ruleId"`
-	RuleName    string `json:"ruleName"`
-	RuleURL     string `json:"ruleUrl"`
-	State       string `json:"state"`
-	ImageURL    string `json:"imageUrl"`
-	Message     string `json:"message"`
-	EvalMatches []struct {
-		Metric string `json:"metric"`
-		Value  int    `json:"value"`
-	} `json:"evalMatches"`
+var (
+	roomID     string
+	token      string
+	timeout    int
+	stdin      *os.File
+	webexToken string
+)
+
+func init() {
+	webexToken = os.Getenv("GRAFANA_BOT_TEAMS_TOKEN")
+}
+
+func sendMessage(alert *grafanaAlert, targetAddress string, targetType string) error {
+
+	if err := validateEvent(alert); err != nil {
+		return errors.New(err.Error())
+	}
+
+	client := resty.New()
+
+	client.SetAuthToken(webexToken)
+	Client := webexteams.NewClient(client)
+
+	template := getTemplateNew(alert)
+
+	var markDownMessage *webexteams.MessageCreateRequest
+	switch targetType {
+	// Email address
+	case "emailAddress":
+		markDownMessage = &webexteams.MessageCreateRequest{
+			Markdown:      template,
+			ToPersonEmail: targetAddress,
+		}
+		// Email from guid
+	case "people":
+		markDownMessage = &webexteams.MessageCreateRequest{
+			Markdown:   template,
+			ToPersonID: targetAddress,
+		}
+		// Room from guid
+	case "room":
+		markDownMessage = &webexteams.MessageCreateRequest{
+			Markdown: template,
+			RoomID:   targetAddress,
+		}
+	}
+
+	if alert.ImageURL != "" {
+		markDownMessage.Files = []string{alert.ImageURL}
+	}
+
+	newMarkDownMessage, _, err := Client.Messages.CreateMessage(markDownMessage)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println("POST:", newMarkDownMessage.ID, newMarkDownMessage.Created)
+	return nil
 }
 
 func handleWebhook(w http.ResponseWriter, r *http.Request) {
+
 	vars := mux.Vars(r)
-	token := vars["token"]
-	chatID := vars["chatId"]
-	var alert GrafanaAlert
+
+	// This is the guid, which can be a roomID, personID, or even a personEmail
+	targetData := vars["context"]
+
+	targetType, err := decodeAlertTargetData(targetData)
+	if err != nil {
+		panic(nil)
+	}
+
+	var alert grafanaAlert
 	if r.Method == http.MethodPost || r.Method == http.MethodPut {
 		reqData, e := ioutil.ReadAll(r.Body)
 		if e != nil {
 			return
-		} else {
-			json.Unmarshal(reqData, &alert)
-			urlTelegram := fmt.Sprintf("https://api.telegram.org/bot%s/sendMessage", token)
-			templateAlert := `
-[{{.State}}] {{.Title}}
-state: {{.RuleName}}
-message: {{.Message}}
-URL: {{.RuleURL}}
-
-Metrics:
-{{range .EvalMatches}}
-	{{.Metric}}: {{.Value}}
-{{end}}
-			`
-			t, _ := template.New("alert").Parse(templateAlert)
-
-			var message bytes.Buffer
-			t.Execute(&message, alert)
-			form := url.Values{
-				"chat_id": {chatID},
-				"text":    {message.String()},
-			}
-			body := bytes.NewBufferString(form.Encode())
-			_, err := http.Post(urlTelegram, "application/x-www-form-urlencoded", body)
-			if err != nil {
-				fmt.Println(err)
-			}
 		}
-
+		json.Unmarshal(reqData, &alert)
+		sendMessage(&alert, targetData, targetType)
 	}
+	return
 }
 
 func main() {
 
-	r := mux.NewRouter()
+	mux := mux.NewRouter()
 
-	r.HandleFunc("/webhooktel/{token}/{chatId}", handleWebhook)
-	log.Fatal(http.ListenAndServe("0.0.0.0:17575", r))
+	mux.HandleFunc("/webex/{context}", handleWebhook)
+
+	muxWithMiddlewares := http.TimeoutHandler(mux, time.Second*10, "Timeout!")
+
+	log.Fatal(http.ListenAndServe(":17575", muxWithMiddlewares))
+
 }
