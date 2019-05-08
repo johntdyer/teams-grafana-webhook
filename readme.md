@@ -1,4 +1,4 @@
-# teams-grafana-webhook:
+# webex-teams-grafana-webhook:
 
 ## Modes
 
