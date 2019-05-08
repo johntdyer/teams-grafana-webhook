@@ -14,19 +14,16 @@
   version = "v2.17.1"
 
 [[projects]]
-  branch = "master"
-  name = "github.com/alecthomas/template"
-  packages = [
-    ".",
-    "parse"
-  ]
-  revision = "a0175ee3bccc567396460bf5acd36800cb10c49c"
-
-[[projects]]
   name = "github.com/aokoli/goutils"
   packages = ["."]
   revision = "41ac8693c5c10a92ea1ff5ac3a7f95646f6123b0"
   version = "v1.1.0"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/banzaicloud/logrus-runtime-formatter"
+  packages = ["."]
+  revision = "12df4a18567f1e9635135cdc241c6917795e2cc7"
 
 [[projects]]
   name = "github.com/google/go-querystring"
@@ -71,10 +68,22 @@
   revision = "758c23da78f5a12135cc49ca21a5286552fd9673"
 
 [[projects]]
+  name = "github.com/konsorten/go-windows-terminal-sequences"
+  packages = ["."]
+  revision = "f55edac94c9bbba5d6182a4be46d86a2c9b5b50e"
+  version = "v1.0.2"
+
+[[projects]]
   name = "github.com/peterhellberg/link"
   packages = ["."]
   revision = "d1cebc7ea14a5fc0de7cb4a45acae773161642c6"
   version = "v1.0.0"
+
+[[projects]]
+  name = "github.com/sirupsen/logrus"
+  packages = ["."]
+  revision = "8bdbc7bcc01dcbb8ec23dc8a28e332258d25251f"
+  version = "v1.4.1"
 
 [[projects]]
   branch = "master"
@@ -93,6 +102,12 @@
     "publicsuffix"
   ]
   revision = "ed066c81e75eba56dd9bd2139ade88125b855585"
+
+[[projects]]
+  branch = "master"
+  name = "golang.org/x/sys"
+  packages = ["unix"]
+  revision = "12bbe5a7a5209180b72cc7e3ed9da40442fe3246"
 
 [[projects]]
   name = "golang.org/x/text"
@@ -124,6 +139,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "ea6e0901c58eac463a9956d9e842102e83ad64e20c99cbc0f3fa997f692d9aa7"
+  inputs-digest = "7c824e495002675f4a5458e99ac19c95cbf7e8c89585a1ef86ef11b10d2ab741"
   solver-name = "gps-cdcl"
   solver-version = 1
