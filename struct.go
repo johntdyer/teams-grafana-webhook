@@ -1,5 +1,10 @@
 package main
 
+import (
+	"github.com/jbogarin/go-cisco-webex-teams/sdk"
+)
+
+// Struct for Grafana Alert
 type grafanaAlert struct {
 	Title       string `json:"title"`
 	RuleID      int    `json:"ruleId"`
@@ -15,4 +20,20 @@ type grafanaAlert struct {
 		} `json:"tags"`
 		Value int `json:"value"`
 	} `json:"evalMatches"`
+}
+
+type applicationConfig struct {
+	webexClient *webexteams.Client
+	webexToken  string
+}
+
+// An alert struct which we will operate on per request
+type AlertEvent struct {
+	GrafanaAlert  *grafanaAlert
+	Template      string
+	TargetAddress string
+	TargetType    string
+	IgnoreNoData  bool
+	NoTags        bool
+	NoImages      bool
 }
