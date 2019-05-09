@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -21,16 +22,32 @@ func HealthCheckHandler(w http.ResponseWriter, r *http.Request) {
 	io.WriteString(w, `{"alive": true}`)
 }
 
+func ReadUserIP(r *http.Request) string {
+	IPAddress := r.Header.Get("X-Real-Ip")
+	if IPAddress == "" {
+		IPAddress = r.Header.Get("X-Forwarded-For")
+	}
+	if IPAddress == "" {
+		IPAddress = r.RemoteAddr
+	}
+	return IPAddress
+}
+
 // GrafanaAlertHandler handler
 func GrafanaAlertHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+
+	log.WithFields(logrus.Fields{
+		"clientIP":    ReadUserIP(r),
+		"requestVars": fmt.Sprintf("%+v", vars),
+		"requestPath": fmt.Sprintf("/webex/%s", vars["context"]),
+	}).Info("Starting request")
 
 	event := &AlertEvent{
 		NoTags:       false,
 		IgnoreNoData: false,
 		NoImages:     false,
 	}
-
-	vars := mux.Vars(r)
 
 	// This is the guid, which can be a roomID, personID, or even a personEmail
 	targetAddressRaw := vars["context"]
@@ -51,11 +68,17 @@ func GrafanaAlertHandler(w http.ResponseWriter, r *http.Request) {
 		event.NoImages = true
 		log.WithFields(logrus.Fields{
 			"targetAddressRaw": targetAddressRaw}).Debug("Detected NoImage mode")
-
 	}
+
+	log.WithFields(logrus.Fields{
+		"event.NoImages":     event.NoImages,
+		"event.ignoreNoData": event.IgnoreNoData,
+		"event.noTags":       event.NoTags,
+		"targetAddressRaw":   targetAddressRaw,
+	}).Debug("run params set")
+
 	targetType, err := decodeAlertTargetData(targetAddressRaw)
 	if err != nil {
-
 		log.Fatal(err)
 	}
 
@@ -71,6 +94,16 @@ func GrafanaAlertHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		json.Unmarshal(reqData, &event.GrafanaAlert)
+
+		log.WithFields(logrus.Fields{
+			"Title":    event.GrafanaAlert.Title,
+			"RuleID":   event.GrafanaAlert.RuleID,
+			"RuleName": event.GrafanaAlert.RuleName,
+			"RuleURL":  event.GrafanaAlert.RuleURL,
+			"State":    event.GrafanaAlert.State,
+			"ImageURL": event.GrafanaAlert.ImageURL,
+			"Message":  event.GrafanaAlert.Message,
+		}).Debug("Grafana Payload")
 
 		err := event.postMessage()
 		if err != nil {

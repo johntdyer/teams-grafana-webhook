@@ -14,12 +14,13 @@ import (
 )
 
 var (
-	roomID    string
-	token     string
-	timeout   int
-	stdin     *os.File
-	log       = logrus.New()
-	appConfig = &applicationConfig{}
+	roomID     string
+	token      string
+	timeout    int
+	stdin      *os.File
+	log        = logrus.New()
+	appConfig  = &applicationConfig{}
+	listenPort = "17575"
 )
 
 func init() {
@@ -27,7 +28,13 @@ func init() {
 	childFormatter := logrus.TextFormatter{}
 	runtimeFormatter := &runtime.Formatter{ChildFormatter: &childFormatter}
 	log.Formatter = runtimeFormatter
-	log.Level = logrus.DebugLevel
+
+	if os.Getenv("DEBUG") == "" {
+		log.Level = logrus.InfoLevel
+
+	} else {
+		log.Level = logrus.DebugLevel
+	}
 
 	if os.Getenv("GRAFANA_BOT_TEAMS_TOKEN") == "" {
 		log.Fatal("GRAFANA_BOT_TEAMS_TOKEN environment variable not found, aborting")
@@ -43,11 +50,11 @@ func main() {
 
 	mux := mux.NewRouter()
 
-	mux.HandleFunc("/webex/{context}", GrafanaAlertHandler) //  .Queries("filter", "{filter}")
+	mux.HandleFunc("/webex/{context}", GrafanaAlertHandler)
 	mux.HandleFunc("/health", HealthCheckHandler)
 
 	muxWithMiddlewares := http.TimeoutHandler(mux, time.Second*10, "Timeout!")
-	log.Info("Ready")
-	log.Fatal(http.ListenAndServe(":17575", muxWithMiddlewares))
+	log.Infof("Ready, Listening on :%s\n", listenPort)
+	log.Fatal(http.ListenAndServe(":"+listenPort, muxWithMiddlewares))
 
 }

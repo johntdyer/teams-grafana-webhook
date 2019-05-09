@@ -2,114 +2,149 @@
 
 
 [[projects]]
+  digest = "1:55388fd080150b9a072912f97b1f5891eb0b50df43401f8b75fb4273d3fec9fc"
   name = "github.com/Masterminds/semver"
   packages = ["."]
+  pruneopts = "UT"
   revision = "c7af12943936e8c39859482e61f0574c2fd7fc75"
   version = "v1.4.2"
 
 [[projects]]
+  digest = "1:e6cdc43eba27f9d29f0d6497414597e45ea812c2e51ffd42a1f8f1bb0c1a9d98"
   name = "github.com/Masterminds/sprig"
   packages = ["."]
+  pruneopts = "UT"
   revision = "544a9b1d90f323f6509491b389714fbbd126bee3"
   version = "v2.17.1"
 
 [[projects]]
+  digest = "1:3b10c6fd33854dc41de2cf78b7bae105da94c2789b6fa5b9ac9e593ea43484ac"
   name = "github.com/aokoli/goutils"
   packages = ["."]
+  pruneopts = "UT"
   revision = "41ac8693c5c10a92ea1ff5ac3a7f95646f6123b0"
   version = "v1.1.0"
 
 [[projects]]
   branch = "master"
+  digest = "1:4af451d439d9e661fcd5c446c2f504e851509c5175d0827c8d71252d970dee4b"
   name = "github.com/banzaicloud/logrus-runtime-formatter"
   packages = ["."]
+  pruneopts = "UT"
   revision = "12df4a18567f1e9635135cdc241c6917795e2cc7"
 
 [[projects]]
+  digest = "1:a63cff6b5d8b95638bfe300385d93b2a6d9d687734b863da8e09dc834510a690"
   name = "github.com/google/go-querystring"
   packages = ["query"]
+  pruneopts = "UT"
   revision = "44c6ddd0a2342c386950e880b658017258da92fc"
   version = "v1.0.0"
 
 [[projects]]
+  digest = "1:236d7e1bdb50d8f68559af37dbcf9d142d56b431c9b2176d41e2a009b664cda8"
   name = "github.com/google/uuid"
   packages = ["."]
+  pruneopts = "UT"
   revision = "9b3b1e0f5f99ae461456d768e7d301a7acdaa2d8"
   version = "v1.1.0"
 
 [[projects]]
+  digest = "1:c79fb010be38a59d657c48c6ba1d003a8aa651fa56b579d959d74573b7dff8e1"
   name = "github.com/gorilla/context"
   packages = ["."]
+  pruneopts = "UT"
   revision = "08b5f424b9271eedf6f9f0ce86cb9396ed337a42"
   version = "v1.1.1"
 
 [[projects]]
+  digest = "1:e73f5b0152105f18bc131fba127d9949305c8693f8a762588a82a48f61756f5f"
   name = "github.com/gorilla/mux"
   packages = ["."]
+  pruneopts = "UT"
   revision = "e3702bed27f0d39777b0b37b664b6280e8ef8fbf"
   version = "v1.6.2"
 
 [[projects]]
+  digest = "1:f9a5e090336881be43cfc1cf468330c1bdd60abdc9dd194e0b1ab69f4b94dd7c"
   name = "github.com/huandu/xstrings"
   packages = ["."]
+  pruneopts = "UT"
   revision = "f02667b379e2fb5916c3cda2cf31e0eb885d79f8"
   version = "v1.2.0"
 
 [[projects]]
+  digest = "1:a0cefd27d12712af4b5018dc7046f245e1e3b5760e2e848c30b171b570708f9b"
   name = "github.com/imdario/mergo"
   packages = ["."]
+  pruneopts = "UT"
   revision = "7c29201646fa3de8506f701213473dd407f19646"
   version = "v0.3.7"
 
 [[projects]]
   branch = "master"
+  digest = "1:a102a55e1274489d52ac528770b9627b163cef1afe76ceb78fabc8c497b8fd02"
   name = "github.com/jbogarin/go-cisco-webex-teams"
   packages = ["sdk"]
+  pruneopts = "UT"
   revision = "758c23da78f5a12135cc49ca21a5286552fd9673"
 
 [[projects]]
+  digest = "1:31e761d97c76151dde79e9d28964a812c46efc5baee4085b86f68f0c654450de"
   name = "github.com/konsorten/go-windows-terminal-sequences"
   packages = ["."]
+  pruneopts = "UT"
   revision = "f55edac94c9bbba5d6182a4be46d86a2c9b5b50e"
   version = "v1.0.2"
 
 [[projects]]
+  digest = "1:e8fcad58263a7511225a674d9c23b9c55aa2f8616e2dab59f184a516f55c6566"
   name = "github.com/peterhellberg/link"
   packages = ["."]
+  pruneopts = "UT"
   revision = "d1cebc7ea14a5fc0de7cb4a45acae773161642c6"
   version = "v1.0.0"
 
 [[projects]]
+  digest = "1:fd61cf4ae1953d55df708acb6b91492d538f49c305b364a014049914495db426"
   name = "github.com/sirupsen/logrus"
   packages = ["."]
+  pruneopts = "UT"
   revision = "8bdbc7bcc01dcbb8ec23dc8a28e332258d25251f"
   version = "v1.4.1"
 
 [[projects]]
   branch = "master"
+  digest = "1:dd658e9008df9e0bea1ddb2caa3df8250e5e42bf54dcb776ed5bef0496395549"
   name = "golang.org/x/crypto"
   packages = [
     "pbkdf2",
-    "scrypt"
+    "scrypt",
   ]
+  pruneopts = "UT"
   revision = "057139ce5d2bdbe6fe73c53679e24e9cf007f637"
 
 [[projects]]
   branch = "master"
+  digest = "1:b6a3256ffb6ee9d7e7159c062f57e091c30c19e13ac3c676729baac7d83ecd21"
   name = "golang.org/x/net"
   packages = [
     "idna",
-    "publicsuffix"
+    "publicsuffix",
   ]
+  pruneopts = "UT"
   revision = "ed066c81e75eba56dd9bd2139ade88125b855585"
 
 [[projects]]
   branch = "master"
+  digest = "1:f42e547cbcaa2cf6548b0bb27a350f75db23340d062877fb534c06eb57934e8c"
   name = "golang.org/x/sys"
   packages = ["unix"]
+  pruneopts = "UT"
   revision = "12bbe5a7a5209180b72cc7e3ed9da40442fe3246"
 
 [[projects]]
+  digest = "1:a2ab62866c75542dd18d2b069fec854577a20211d7c0ea6ae746072a1dccdd18"
   name = "golang.org/x/text"
   packages = [
     "collate",
@@ -125,20 +160,30 @@
     "unicode/bidi",
     "unicode/cldr",
     "unicode/norm",
-    "unicode/rangetable"
+    "unicode/rangetable",
   ]
+  pruneopts = "UT"
   revision = "f21a4dfb5e38f5895301dc265a8def02365cc3d0"
   version = "v0.3.0"
 
 [[projects]]
+  digest = "1:ce431d26276fb2227ae64ad2f7d980e8da9126c93979d9c83f413c36215e7031"
   name = "gopkg.in/resty.v1"
   packages = ["."]
+  pruneopts = "UT"
   revision = "03c09fa32a21b7b27b8dbb3877826c1ab3d2daa2"
   version = "v1.11.0"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "7c824e495002675f4a5458e99ac19c95cbf7e8c89585a1ef86ef11b10d2ab741"
+  input-imports = [
+    "github.com/Masterminds/sprig",
+    "github.com/banzaicloud/logrus-runtime-formatter",
+    "github.com/gorilla/mux",
+    "github.com/jbogarin/go-cisco-webex-teams/sdk",
+    "github.com/sirupsen/logrus",
+    "gopkg.in/resty.v1",
+  ]
   solver-name = "gps-cdcl"
   solver-version = 1

@@ -48,11 +48,13 @@ func (e *AlertEvent) createMessageRequest() (*webexteams.MessageCreateRequest, e
 
 func (e *AlertEvent) postMessage() error {
 
+	log.Debug("Starting message post")
+
 	if err := validateEvent(e.GrafanaAlert); err != nil {
 		return errors.New(err.Error())
 	}
 
-	var markDownMessage *webexteams.MessageCreateRequest
+	// markDownMessage := &webexteams.MessageCreateRequest{}
 
 	if e.GrafanaAlert.State == "no_data" && e.IgnoreNoData == true {
 		log.WithFields(logrus.Fields{
@@ -64,6 +66,14 @@ func (e *AlertEvent) postMessage() error {
 		return nil
 	}
 
+	// Render template
+	e.renderTemplate()
+
+	markDownMessage, err := e.createMessageRequest()
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	// Ignore images if present in noImage
 	if e.NoTags == false {
 
@@ -71,20 +81,13 @@ func (e *AlertEvent) postMessage() error {
 			log.WithFields(logrus.Fields{
 				"briefMode": false,
 			}).Debug("Adding Image")
+
 			markDownMessage.Files = []string{e.GrafanaAlert.ImageURL}
 		}
 	} else {
 		log.WithFields(logrus.Fields{
 			"briefMode": true,
 		}).Debug("Brief Mode")
-	}
-
-	// Render template
-	e.renderTemplate()
-
-	markDownMessage, err := e.createMessageRequest()
-	if err != nil {
-		log.Fatal(err)
 	}
 
 	newMarkDownMessage, _, err := appConfig.webexClient.Messages.CreateMessage(markDownMessage)
@@ -196,6 +199,11 @@ func (e *AlertEvent) minimizeTemplate(in string) {
 
 // Get tje correct unicode emoji for alert
 func stateToEmojifier(event *grafanaAlert) (string, string, string) {
+
+	log.WithFields(logrus.Fields{
+		"eventState": event.State,
+	}).Debug("state to emoji method")
+
 	switch event.State {
 
 	case "ok":
@@ -227,6 +235,13 @@ func parseTime(input time.Time) string {
 // }
 
 func validateEvent(alert *grafanaAlert) error {
+
+	log.WithFields(logrus.Fields{
+		"AlertTitle":    alert.Title,
+		"AlertRuleName": alert.RuleName,
+		"AlertRuleUrl":  alert.RuleURL,
+	}).Debug("Starting validation of even")
+
 	if alert.Title == "" {
 		return errors.New("tile is missing")
 	}
@@ -251,6 +266,9 @@ func findNamedMatches(regex *regexp.Regexp, str string) map[string]string {
 
 // decodeAlertTargetData Used to determine the type of message we're sending based on the path. Base64 encoded personID, SpaceID, or a valid email address
 func decodeAlertTargetData(targetData string) (string, error) {
+	log.WithFields(logrus.Fields{
+		"targetAddress": targetData,
+	}).Debug("decode target address")
 
 	// Check if its an email
 	re := regexp.MustCompile(emailRegex)
